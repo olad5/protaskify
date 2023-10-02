@@ -45,7 +45,6 @@ export class CoreApiResponse<TData> {
     stackTrace?: string,
     status: false = false
   ): CoreApiResponse<TData> {
-    console.log('code me i saw bro', code);
     const resultCode: number = code || Code.INTERNAL_ERROR.code;
     const resultMessage: string = message || Code.INTERNAL_ERROR.message;
 

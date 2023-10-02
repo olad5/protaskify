@@ -7,21 +7,13 @@ import {
   HttpRestApiCreateUserBody,
   HttpRestApiLoginUserBody,
   HttpRestApiLoginUserResponse,
-  CommonResponse,
+  ResponseWithCommonData,
+  DataWithMessage,
   UserDTO,
 } from '@protaskify/shared/dto';
-import ServiceAdapter from '@protaskify/shared/port/http/ServiceAdapter';
+import ServiceAdapter from '@protaskify/shared/adapters/service.adapter';
 import { Request } from 'express';
 import { ServerConfig } from '@protaskify/shared/infrastructure/config/ServerConfig';
-
-type DataWithMessage<D> = {
-  message: string;
-  data: D;
-};
-
-type ResponseWithCommonData<R> = CommonResponse & {
-  data: R;
-};
 
 @Injectable()
 export class UserServiceAdapter {
@@ -104,7 +96,7 @@ export class UserServiceAdapter {
       message: response.message,
       data: {
         id: response.data.id,
-        accessToken: response.data.accessToken.trim(),
+        accessToken: response.data.accessToken,
       },
     };
 

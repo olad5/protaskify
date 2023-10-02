@@ -18,4 +18,10 @@ export class ServerConfig {
   )
     .required()
     .asString();
+
+  public static readonly TASK_SERVICE_BASE_URL: string = get(
+    'TASK_SERVICE_BASE_URL'
+  )
+    .required()
+    .asString();
 }

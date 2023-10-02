@@ -9,11 +9,11 @@ export class BaseModel extends Model {
 }
 
 export class UserModel extends BaseModel {
-  id: string;
-  email: string;
-  first_name: string;
-  last_name: string;
-  password: string;
+  id!: string;
+  email!: string;
+  first_name!: string;
+  last_name!: string;
+  password!: string;
 
   static get tableName(): string {
     return tableName;

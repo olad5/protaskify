@@ -16,12 +16,19 @@ import { PassportModule } from '@nestjs/passport';
 import { ApiServerConfig } from '../infrastructure/config/ApiServerConfig';
 import knexConfig from '../infrastructure/adapter/persistence/knex/knexfile';
 import { AppService } from './app.service';
+import { GetUserByUserIdService } from '../core/service/usecase/GetUserByUserIdService';
 
 const useCaseProviders: Provider[] = [
   {
     provide: UserDITokens.CreateUserUseCase,
     useFactory: (userRepository: UserRepositoryPort) =>
       new CreateUserService(userRepository),
+    inject: [UserDITokens.UserRepository],
+  },
+  {
+    provide: UserDITokens.GetUserByUserIdUseCase,
+    useFactory: (userRepository: UserRepositoryPort) =>
+      new GetUserByUserIdService(userRepository),
     inject: [UserDITokens.UserRepository],
   },
 ];

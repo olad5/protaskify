@@ -52,4 +52,20 @@ export default class ServiceAdapter {
       return error.response.data ? error.response.data : { status: false };
     }
   }
+  public async put<T, V>(
+    url: string,
+    data: T,
+    headers: { [key: string]: string } = {}
+  ): Promise<V> {
+    try {
+      const response = await axios.put<T, AxiosResponse<V>>(
+        `${url}`,
+        data,
+        this.getConfig(headers)
+      );
+      return response.data;
+    } catch (error) {
+      return error.response.data ? error.response.data : { status: false };
+    }
+  }
 }

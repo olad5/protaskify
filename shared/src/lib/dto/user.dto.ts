@@ -1,10 +1,3 @@
-export type CommonResponse = {
-  status: boolean;
-  code: number;
-  message: string;
-  timestamp: number;
-};
-
 export type UserDTO = {
   id: string;
   firstName: string;

@@ -11,6 +11,7 @@
     "@nestjs/microservices": "^10.2.5",
     "@nestjs/passport": "^10.0.2",
     "@nestjs/platform-express": "^10.0.2",
+    "@nestjs/schedule": "^3.0.4",
     "@nestjs/typeorm": "^10.0.0",
     "@willsoto/nestjs-objection": "^8.1.0",
     "amqp-connection-manager": "^4.1.14",

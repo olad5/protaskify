@@ -4,9 +4,10 @@ import { AppService } from './app.service';
 import { UserModule } from '../user/user.module';
 import { NestHttpExceptionFilter } from '@protaskify/shared/api/exception-filter/NestHttpExceptionFilter';
 import { APP_FILTER } from '@nestjs/core';
+import { TaskModule } from '../task/task.module';
 
 @Module({
-  imports: [UserModule],
+  imports: [UserModule, TaskModule],
   controllers: [AppController],
   providers: [
     AppService,

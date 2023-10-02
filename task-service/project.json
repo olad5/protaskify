@@ -1,0 +1,64 @@
+{
+  "name": "task-service",
+  "$schema": "../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "task-service/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nx/webpack:webpack",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "target": "node",
+        "compiler": "tsc",
+        "outputPath": "dist/task-service",
+        "main": "task-service/src/main.ts",
+        "tsConfig": "task-service/tsconfig.app.json",
+        "assets": ["task-service/src/assets"],
+        "isolatedConfig": true,
+        "webpackConfig": "task-service/webpack.config.js"
+      },
+      "configurations": {
+        "development": {},
+        "production": {}
+      }
+    },
+    "serve": {
+      "executor": "@nx/js:node",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "task-service:build"
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "task-service:build:development"
+        },
+        "production": {
+          "buildTarget": "task-service:build:production"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nx/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["task-service/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "task-service/jest.config.ts",
+        "passWithNoTests": true
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "codeCoverage": true
+        }
+      }
+    }
+  },
+  "tags": []
+}

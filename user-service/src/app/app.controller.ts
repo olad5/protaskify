@@ -5,6 +5,7 @@ import {
   HttpCode,
   HttpStatus,
   Inject,
+  Param,
   Post,
   Req,
   UseGuards,
@@ -25,12 +26,16 @@ import { HttpRequestWithUser } from '../core/service/auth/type/HttpAuthTypes';
 import { HttpAuthService } from '../core/service/auth/HttpAuthService';
 import { HttpJwtAuthGuard } from '../core/service/auth/passport/guard/HttpJwtAuthGuard';
 import { AppService } from './app.service';
+import { GetUserByUserIdUseCase } from '../core/domain/usecase/GetUserByIdUseCase';
+import { GetUserByUserIdAdapter } from '../infrastructure/adapter/usecase/GetUserByUserIdAdapter';
 
 @Controller('users')
 export class AppController {
   constructor(
     @Inject(UserDITokens.CreateUserUseCase)
     private readonly createUserUseCase: CreateUserUseCase,
+    @Inject(UserDITokens.GetUserByUserIdUseCase)
+    private readonly getUserByUserIdUseCase: GetUserByUserIdUseCase,
     private readonly authService: HttpAuthService,
     private readonly appService: AppService
   ) {}
@@ -76,5 +81,17 @@ export class AppController {
     };
 
     return CoreApiResponse.success(result, 'user authenticated successfully');
+  }
+
+  @Get('/:userId')
+  @HttpCode(HttpStatus.OK)
+  public async getUserById(
+    @Param('userId') userId: string
+  ): Promise<CoreApiResponse<UserDTO>> {
+    const adapter = await GetUserByUserIdAdapter.new({
+      userId,
+    });
+    const user = await this.getUserByUserIdUseCase.execute(adapter);
+    return CoreApiResponse.success<UserDTO>(ToUserDTO(user));
   }
 }

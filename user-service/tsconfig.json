@@ -12,7 +12,7 @@
   ],
   "compilerOptions": {
     "esModuleInterop": true,
-"experimentalDecorators": true,
-"strictPropertyInitialization": false
+  "experimentalDecorators": true,
+  "strictPropertyInitialization": false
   }
 }
