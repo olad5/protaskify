@@ -2,7 +2,10 @@
   "name": "@protaskify/source",
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "task-service:migrate:latest": "npx dotenv -e ./task-service/.env --  knex migrate:latest --knexfile='task-service/src/infrastructure/adapter/persistence/knex/knexfile.ts'",
+    "user-service:migrate:latest": "npx dotenv -e ./user-service/.env --  knex migrate:latest --knexfile='user-service/src/infrastructure/adapter/persistence/knex/knexfile.ts'"
+  },
   "private": true,
   "dependencies": {
     "@nestjs/common": "^10.0.2",
