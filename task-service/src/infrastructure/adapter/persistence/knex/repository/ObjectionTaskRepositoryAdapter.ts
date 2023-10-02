@@ -4,18 +4,20 @@ import { Task } from 'task-service/src/core/domain/entity/Task';
 import { TaskRepositoryPort } from 'task-service/src/core/domain/port/persistence/TaskRepositoryPort';
 import { ObjectionTaskMapper } from '../entity/mapper/ObjectionTaskMapper';
 import { TaskUserModel } from '../models/task_user.model';
+import { RedisClient } from '@protaskify/shared/infrastructure/adapter/cache/redis/redis.service';
+import { TaskDTO } from '@protaskify/shared/dto';
+import { RedisTaskMapper } from '../entity/mapper/RedisTaskMapper';
 
 export class ObjectionTaskRepositoryAdapter implements TaskRepositoryPort {
   constructor(
     @Inject(TaskModel) private readonly taskModel: typeof TaskModel,
-    @Inject(TaskUserModel) private readonly taskUserModel: typeof TaskUserModel
+    @Inject(TaskUserModel) private readonly taskUserModel: typeof TaskUserModel,
+    private readonly cache: RedisClient
   ) {}
 
   async createTask(task: Task): Promise<void> {
-    const objectionTask = ObjectionTaskMapper.toPersistence(task);
-
     await this.taskModel.query().insert({
-      ...objectionTask,
+      ...ObjectionTaskMapper.toPersistence(task),
     });
   }
 
@@ -45,11 +47,19 @@ export class ObjectionTaskRepositoryAdapter implements TaskRepositoryPort {
   }
 
   async findTaskByTaskId(id: string): Promise<Task> {
-    const objectionTask = await this.taskModel.query().findById(id);
+    const cachedTask = await this.cache.getOne<TaskDTO>(id);
+    if (cachedTask !== undefined) {
+      return await RedisTaskMapper.toDomainEntity(cachedTask);
+    }
 
-    return objectionTask
-      ? ObjectionTaskMapper.toDomainEntity(objectionTask)
-      : undefined;
+    const objectionTask = await this.taskModel.query().findById(id);
+    if (!objectionTask) {
+      return undefined;
+    }
+    const task = ObjectionTaskMapper.toDomainEntity(objectionTask);
+
+    await this.cache.set(task.getId(), task);
+    return task;
   }
 
   async findTasksAssignedToUser(userId: string): Promise<Task[]> {

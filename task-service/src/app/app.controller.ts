@@ -17,10 +17,7 @@ import { ToTaskDTO } from '../core/domain/mapper/TaskDTOMapper';
 import { GetTaskByTaskIdAdapter } from '../infrastructure/adapter/usecase/GetTaskByTaskIdAdapter';
 import { CreateProjectUseCase } from '../core/domain/usecase/CreateProjectUseCase';
 import { CreateProjectAdapter } from '../infrastructure/adapter/usecase/CreateProjectAdapter';
-import {
-  ProjectDTO,
-  ToProjectDTO,
-} from '../core/domain/mapper/ProjectDTOMapper';
+import { ToProjectDTO } from '../core/domain/mapper/ProjectDTOMapper';
 import { CreateTaskAdapter } from '../infrastructure/adapter/usecase/CreateTaskAdapter';
 import { CreateTaskUseCase } from '../core/domain/usecase/CreateTaskUseCase';
 import { TaskDITokens } from './di/TaskDITokens';
@@ -32,6 +29,7 @@ import {
   HttpRestApiAssignTaskBody,
   HttpRestApiCreateProjectBody,
   HttpRestApiCreateTaskBody,
+  ProjectDTO,
   TaskDTO,
 } from '@protaskify/shared/dto';
 import { GetTasksByProjectIdUseCase } from '../core/domain/usecase/GetTasksByProjectIdUseCase';

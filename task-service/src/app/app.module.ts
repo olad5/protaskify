@@ -17,6 +17,7 @@ import { TaskDITokens } from './di/TaskDITokens';
 import { ProjectRepositoryPort } from '../core/domain/port/persistence/ProjectRepositoryPort';
 import { SharedDITokens } from '@protaskify/shared/di/SharedDITokens';
 import { RabbitMQModule } from '@protaskify/shared/infrastructure/adapter/message/rabbitmq/rabbitmq.module';
+import { RedisCacheModule } from '@protaskify/shared/infrastructure/adapter/cache/redis/redis.module';
 import { MessageQueue } from '@protaskify/shared/port/message/MessageQueue';
 import { ProjectModel } from '../infrastructure/adapter/persistence/knex/models/project.model';
 import { ObjectionProjectRepositoryAdapter } from '../infrastructure/adapter/persistence/knex/repository/ObjectionProjectRepositoryAdapter';
@@ -27,6 +28,7 @@ import { AssignTaskService } from '../core/service/usecase/AssignTaskService';
 import { NotifyUserTaskIsDueService } from '../core/service/usecase/NotifyUserTaskIsDueService';
 import { GetTasksAssignedToUserService } from '../core/service/usecase/GetTasksAssignedToUserService';
 import { GetTasksByProjectIdService } from '../core/service/usecase/GetTasksByProjectIdService';
+import { RedisClient } from '@protaskify/shared/infrastructure/adapter/cache/redis/redis.service';
 
 const taskUseCaseProviders: Provider[] = [
   {
@@ -115,25 +117,28 @@ const persistenceProviders: Provider[] = [
     provide: TaskDITokens.TaskRepository,
     useFactory: (
       taskModel: typeof TaskModel,
-      taskUserModel: typeof TaskUserModel
+      taskUserModel: typeof TaskUserModel,
+      cache: RedisClient
     ) => {
       const objectionTaskRepository = new ObjectionTaskRepositoryAdapter(
         taskModel,
-        taskUserModel
+        taskUserModel,
+        cache
       );
       return objectionTaskRepository;
     },
-    inject: [TaskModel, TaskUserModel],
+    inject: [TaskModel, TaskUserModel, RedisClient],
   },
   {
     provide: TaskDITokens.ProjectRepository,
-    useFactory: (databaseService: typeof ProjectModel) => {
+    useFactory: (databaseService: typeof ProjectModel, cache: RedisClient) => {
       const objectionTaskRepository = new ObjectionProjectRepositoryAdapter(
-        databaseService
+        databaseService,
+        cache
       );
       return objectionTaskRepository;
     },
-    inject: [ProjectModel],
+    inject: [ProjectModel, RedisClient],
   },
 ];
 
@@ -145,6 +150,7 @@ const persistenceProviders: Provider[] = [
       config: knexConfig,
     }),
     RabbitMQModule,
+    RedisCacheModule,
     ServiceAdapterModule,
     ScheduleModule.forRoot(),
   ],

@@ -1,5 +1,6 @@
 import { Module, Provider } from '@nestjs/common';
 import { AppController } from './app.controller';
+import { RedisCacheModule } from '@protaskify/shared/infrastructure/adapter/cache/redis/redis.module';
 import { UserDITokens } from './di/UserDITokens';
 import { UserRepositoryPort } from '../core/domain/port/persistence/UserRepositoryPort';
 import { CreateUserService } from '../core/service/usecase/CreateUserService';
@@ -17,6 +18,7 @@ import { ApiServerConfig } from '../infrastructure/config/ApiServerConfig';
 import knexConfig from '../infrastructure/adapter/persistence/knex/knexfile';
 import { AppService } from './app.service';
 import { GetUserByUserIdService } from '../core/service/usecase/GetUserByUserIdService';
+import { RedisClient } from '@protaskify/shared/infrastructure/adapter/cache/redis/redis.service';
 
 const useCaseProviders: Provider[] = [
   {
@@ -36,13 +38,14 @@ const useCaseProviders: Provider[] = [
 const persistenceProviders: Provider[] = [
   {
     provide: UserDITokens.UserRepository,
-    useFactory: (databaseService: typeof UserModel) => {
+    useFactory: (databaseService: typeof UserModel, cache: RedisClient) => {
       const objectionUserRepository = new ObjectionUserRepositoryAdapter(
-        databaseService
+        databaseService,
+        cache
       );
       return objectionUserRepository;
     },
-    inject: [UserModel],
+    inject: [UserModel, RedisClient],
   },
 ];
 
@@ -69,6 +72,7 @@ const authModules = [
     ObjectionModule.register({
       config: knexConfig,
     }),
+    RedisCacheModule,
     ...authModules,
   ],
   providers: [

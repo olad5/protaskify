@@ -2,6 +2,7 @@ import { ServerConfig } from '@protaskify/shared/infrastructure/config/ServerCon
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app/app.module';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
+import { Logger } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.createMicroservice<MicroserviceOptions>(
@@ -18,6 +19,7 @@ async function bootstrap() {
     }
   );
   await app.listen();
+  Logger.log(`🚀 Notification Service Application is running`);
 }
 
 bootstrap();

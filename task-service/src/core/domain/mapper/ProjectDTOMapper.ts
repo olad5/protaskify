@@ -1,12 +1,5 @@
+import { ProjectDTO } from '@protaskify/shared/dto';
 import { Project } from '../entity/Project';
-export type ProjectDTO = {
-  id: string;
-  name: string;
-  description: string;
-  creatorId: string;
-  createdAt: string;
-  updatedAt: string;
-};
 
 export function ToProjectDTO(project: Project): ProjectDTO {
   return {

@@ -9,6 +9,14 @@ export class ServerConfig {
     .required()
     .asString();
 
+  public static readonly REDIS_HOST: string = get('REDIS_HOST')
+    .required()
+    .asString();
+
+  public static readonly REDIS_PORT: number = get('REDIS_PORT')
+    .required()
+    .asInt();
+
   public static readonly LOG_ENABLE: boolean = get('API_LOG_ENABLE')
     .required()
     .asBool();
